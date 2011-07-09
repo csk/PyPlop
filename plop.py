@@ -14,14 +14,9 @@ class Plop:
         return self.cmd_output.split(" ")[0]
 
     def _get_fullname(self):
-        self.p = os.popen("finger " + self._get_username())
+        self.p = os.popen("getent passwd " + self._get_username())
         self.cmd_output = self.p.readline()
-        self.aux = self.cmd_output.split(" ")[5:]
-        self.s = ""
-        for i in self.aux:
-            self.s += i + " "
-        self.p.close()
-        return self.s.strip()
+        return self.cmd_output.split(":")[4]
 
     def _get_hostname(self):
         self.p = os.popen("hostname ")
@@ -33,7 +28,7 @@ class Plop:
      
     def unlock(self, widget, data=None):
         if len(data[0].get_text()) <= 4 :
-            data[1].set_label(u"Contraseña incorrecta!")
+            data[1].set_label(u"Contraseña incorrecta.")
         else:
             print self._get_username()        
             print data[0].get_text()        
@@ -51,6 +46,16 @@ class Plop:
         self.window0.modify_bg (gtk.STATE_SELECTED, self.color);
         self.window0.modify_bg (gtk.STATE_PRELIGHT, self.color);
         self.window0.modify_bg (gtk.STATE_INSENSITIVE, self.color);
+
+        imagename = "/usr/share/backgrounds/laughlin/default/standard/laughlin.png"
+        pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(imagename, \
+                gtk.gdk.screen_width(), \
+                gtk.gdk.screen_height()) 
+        pixmap, mask = pixbuf.render_pixmap_and_mask() 
+        image = gtk.Image()
+        image.set_from_pixmap(pixmap, mask)
+        image.show()
+        self.window0.add(image)
         self.window0.fullscreen()
 
         self.label0 = builder.get_object("label_fullname")
